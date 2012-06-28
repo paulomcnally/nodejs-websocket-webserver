@@ -1,0 +1,139 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="utf-8" />
+	<title>Node.js Notificador</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js">
+	</script>
+<script src="http://192.168.0.75:6969/socket.io/socket.io.js">
+</script>
+	<style>
+body{
+	color: #333;
+	background: #333;
+	font-family: "Helvetica", Arial;
+	font-size: 48px;
+	text-align: center;
+}
+form
+{
+	background: #CCC;
+	border-radius: 1em;
+	box-shadow: 0px 5px 5px rgba(0,0,0,0.5);
+	text-shadow: 5px 5px 5px rgba(0,0,0,0.5);
+	margin: 1em auto;
+	padding: 1em;
+	width: 40%;
+}
+form input
+{
+	display: block;
+	font-size: 40px;
+	margin: 1em auto;
+	padding: 0.5em;
+	width: 70%;
+}
+	</style>
+<script>
+function var_dump(data,addwhitespace,safety,level) {
+        var rtrn = '';
+        var dt,it,spaces = '';
+        if(!level) {level = 1;}
+        for(var i=0; i<level; i++) {
+           spaces += '   ';
+        }//end for i<level
+        if(typeof(data) != 'object') {
+           dt = data;
+           if(typeof(data) == 'string') {
+              if(addwhitespace == 'html') {
+                 dt = dt.replace(/&/g,'&amp;');
+                 dt = dt.replace(/>/g,'&gt;');
+                 dt = dt.replace(/</g,'&lt;');
+              }//end if addwhitespace == html
+              dt = dt.replace(/\"/g,'\"');
+              dt = '"' + dt + '"';
+           }//end if typeof == string
+           if(typeof(data) == 'function' && addwhitespace) {
+              dt = new String(dt).replace(/\n/g,"\n"+spaces);
+              if(addwhitespace == 'html') {
+                 dt = dt.replace(/&/g,'&amp;');
+                 dt = dt.replace(/>/g,'&gt;');
+                 dt = dt.replace(/</g,'&lt;');
+              }//end if addwhitespace == html
+           }//end if typeof == function
+           if(typeof(data) == 'undefined') {
+              dt = 'undefined';
+           }//end if typeof == undefined
+           if(addwhitespace == 'html') {
+              if(typeof(dt) != 'string') {
+                 dt = new String(dt);
+              }//end typeof != string
+              dt = dt.replace(/ /g,"&nbsp;").replace(/\n/g,"<br>");
+           }//end if addwhitespace == html
+           return dt;
+        }//end if typeof != object && != array
+        for (var x in data) {
+           if(safety && (level > safety)) {
+              dt = '*RECURSION*';
+           } else {
+              try {
+                 dt = var_dump(data[x],addwhitespace,safety,level+1);
+              } catch (e) {continue;}
+           }//end if-else level > safety
+           it = var_dump(x,addwhitespace,safety,level+1);
+           rtrn += it + ':' + dt + ',';
+           if(addwhitespace) {
+              rtrn += '\n'+spaces;
+           }//end if addwhitespace
+        }//end for...in
+        if(addwhitespace) {
+           rtrn = '{\n' + spaces + rtrn.substr(0,rtrn.length-(2+(level*3))) + '\n' + spaces.substr(0,spaces.length-3) + '}';
+        } else {
+           rtrn = '{' + rtrn.substr(0,rtrn.length-1) + '}';
+        }//end if-else addwhitespace
+        if(addwhitespace == 'html') {
+           rtrn = rtrn.replace(/ /g,"&nbsp;").replace(/\n/g,"<br>");
+        }//end if addwhitespace == html
+        return rtrn;
+     }
+
+
+
+
+
+
+
+
+
+
+
+
+var websocket = io.connect("http://192.168.0.75:6969");
+$(document).on("ready", open_ws);
+function open_ws()
+	{
+	websocket.on("ws_getData", getMessage);
+	//$("#formulario").on("submit",sendMessage);
+	}
+function sendMessage(e)
+	{
+	e.preventDefault();
+	websocket.emit("new_message", $("#nombre").val() );
+	$("#nombre").fadeOut();
+	}
+function getMessage(data)
+	{
+	$("#formulario label").text(data.name);
+	}
+</script>
+</head>
+<body>
+	<form id="formulario">
+		<label>¿Cual es tu nombre?</label>
+		<input type="text" maxlength="10" id="nombre" 
+			placeholder="Tu nombre completo"
+			required />
+	</form>
+</body>
+</html>
