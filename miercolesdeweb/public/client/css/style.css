@@ -1,0 +1,26 @@
+body{
+	background-color: #000000;
+}
+
+.logo{
+	position: relative;
+	overflow: hidden;
+	margin: 20px auto;
+	width: 180px;
+}
+
+.container-fluid{
+	margin-top: 30px;
+}
+
+.grid{
+	background-color: #ffffff;
+	border:5px solid #8cc84b;
+	border-radius:5px;
+	padding: 20px;
+	font-size: 28px;
+	margin-top: 30px;
+	margin-bottom: 10px;
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	color: #8cc84b;
+}

@@ -1,0 +1,74 @@
+<!DOCTYPE HTML>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="client/css/bootstrap.min.css">
+    <link rel="stylesheet" href="client/css/bootstrap-responsive.min.css">
+    <link rel="stylesheet" href="client/css/style.css">
+    <link type="image/x-icon" rel="shortcut icon" href="client/static/favicon.ico">
+    <script src="client/js/libs/jquery.min.js"></script>
+    <script src="http://25.47.39.98:8081/socket.io/socket.io.js"></script>
+    <script>
+      var websocket = io.connect("http://25.47.39.98:8081");
+
+      $(document).on('ready',function(){
+        function open_ws(){
+          websocket.on("ws_getData", getMessage);
+        }
+
+         function getMessage(json){
+          $('<div/>', { class: 'row', id: json.id }).prependTo('.span12');
+          $('<div/>', { class: 'span12 grid', html: json.text }).appendTo('#'+json.id);
+        }
+
+        var db = eval('(' + '@json_data' + ')'); 
+        for( i=0; i<db.length; i++ ){
+          getMessage( db[i] );
+        }
+
+        open_ws();
+      });
+    </script>
+</head>
+<body>
+	
+
+<div class="container">
+  <div class="row-fluid">
+    <div class="span12"></div>
+  </div>
+</div>
+
+<div class="row-fluid">
+    <div class="span4">
+      <div class="logo">
+         <img src="client/static/logo.png">
+      </div>
+    </div>
+    <div class="span4">
+      <div class="logo">
+         <img src="client/static/mongodb.png">
+      </div>
+    </div>
+  </div>
+
+
+  <div class="row-fluid">
+    <div class="span4">
+      <div class="logo">
+         <img src="client/static/de-todo.png">
+      </div>
+    </div>
+    <div class="span4">
+      <div class="logo">
+        <img src="client/static/co-labora.png">
+      </div>
+    </div>
+    <div class="span4">
+      <div class="logo">
+         <img src="client/static/club-dibujo.png">
+      </div>
+    </div>
+  </div>
+</body>
+</html>
